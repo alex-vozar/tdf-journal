@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="#111111"></rect><text x="30" y="115" font-family="Georgia, serif" font-size="64" fill="#ffffff">TDF</text></svg></template>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:#ffffff; }
+  * { box-sizing: border-box; }
+  a { color:#111111; text-decoration: underline; text-underline-offset: 3px; }
+  a:hover { color:#777777; }
+  ::selection { background:#111111; color:#ffffff; }
+  @media (max-width: 820px) {
+    .tdf-root { grid-template-columns: 1fr !important; padding:18px 18px 50px !important; gap:0 !important; }
+    .tdf-aside { position:static !important; max-height:none !important; margin-bottom:28px; }
+    .tdf-nav-row { grid-template-columns: 18px minmax(0,1fr) 64px 40px !important; }
+  }
+  @media (max-width: 500px) {
+    .tdf-root { padding:14px 14px 40px !important; }
+    .tdf-nav-row { grid-template-columns: 16px minmax(0,1fr) 40px !important; font-size:9.5px !important; }
+    .tdf-nav-row > div:nth-child(3) { display:none; }
+    .tdf-nav-btn { grid-template-columns: 16px minmax(0,1fr) 40px !important; }
+    .tdf-nav-btn > span:nth-child(3) { display:none; }
+    .tdf-entry-row { white-space:normal !important; }
+  }
+</style>
+</helmet>
+<div class="tdf-root" style="min-height:100vh; background:#fff; color:#111; font-family:'Geist Mono', ui-monospace, monospace; font-size:12px; line-height:1.6; display:grid; grid-template-columns: minmax(340px, 28%) minmax(0,1fr); gap:0 clamp(32px, 5vw, 76px); align-items:start; padding:26px 30px 70px;">
+
+  <aside class="tdf-aside" style="position:sticky; top:26px; align-self:start; max-height:calc(100vh - 52px); overflow:auto; min-width:0;">
+    <div style="font-family: 'Space Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 25px; font-weight: 400; letter-spacing: -0.025em; line-height: 1"><i><span style="font-style: normal;">Alex Vozar</span></i></div>
+    <div style="margin-top:8px; font-size:11px; line-height:1.45; letter-spacing:0.02em; text-transform:uppercase;">
+      <div>UNIVERSITY OF CALIFORNIA, BERKELEY MDES 2027</div>
+      <div>Technology Design Foundations / Fall 2026</div>
+      <div style="margin-top:6px;"><a href="mailto:alexvozar@berkeley.edu">alexvozar@berkeley.edu</a></div>
+    </div>
+
+    <div style="margin-top:20px; max-width:100%; border-top:1px solid #111; border-bottom:1px solid #111; height:6px;"></div>
+
+    <div class="tdf-nav-row" style="max-width:100%; display:grid; grid-template-columns: 18px minmax(0,1fr) 84px 40px; gap:0 10px; font-size:10.5px; letter-spacing:0.02em; padding:5px 0; border-bottom:1px solid #111;">
+      <div></div><div>TITLE</div><div>TYPE</div><div>DATE</div>
+    </div>
+
+    <nav style="max-width:100%; display:flex; flex-direction:column;">
+      <sc-for list="{{ entries }}" as="e" hint-placeholder-count="4">
+        <button type="button" class="tdf-nav-btn" onClick="{{ e.onSelect }}" style="{{ e.rowStyle }}" style-hover="color:#1400FF; --dim:#1400FF;">
+          <span style="font-size:9.5px; color:inherit; align-self:start; line-height:1; margin-top:0px; text-align:right;">{{ e.num }}</span>
+          <span style="{{ e.titleStyle }}">{{ e.title }}</span>
+          <span style="font-size:10.5px; letter-spacing:0.02em; color:var(--dim, #777);">{{ e.type }}</span>
+          <span style="font-size:10.5px; color:var(--dim, #777);">{{ e.date }}</span>
+        </button>
+      </sc-for>
+    </nav>
+
+    
+  </aside>
+
+  <main style="min-width:0;">
+    <div style="border-top:1px solid #111; border-bottom:1px solid #111; height:6px;"></div>
+    <div class="tdf-entry-row" style="display:grid; grid-template-columns: auto minmax(0,1fr) auto; gap:0 clamp(12px,2vw,24px); align-items:baseline; white-space:nowrap; padding:6px 0; font-size:12px; letter-spacing:0.02em;">
+      <div>ENTRY {{ post.num }}</div>
+      <div></div>
+      <div style="color:#777;">{{ post.longDate }}</div>
+    </div>
+
+    <article>
+      <svg width="0" height="0" style="position:absolute;" aria-hidden="true"><filter id="zoeMatch" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncR type="linear" slope="1.40" intercept="-0.49"></feFuncR><feFuncG type="linear" slope="1.03" intercept="-0.155"></feFuncG><feFuncB type="linear" slope="0.875" intercept="-0.035"></feFuncB></feComponentTransfer></filter></svg>
+      <sc-if value="{{ post.heroSrc }}">
+        <div style="margin:24px 0 6px;">
+          <img src="{{ post.heroSrc }}" alt="{{ post.title }}" style="display:block; width:100%; height:auto; border:1px solid #111;">
+        </div>
+      </sc-if>
+      <sc-if value="{{ post.heroVideoSrc }}">
+        <div style="margin:24px 0 6px;">
+          <sc-if value="{{ post.heroVideoBlob }}" hint-placeholder-val="{{ true }}">
+            <video src="{{ post.heroVideoBlob }}" ref="{{ post.heroVideoRef }}" autoPlay="{{ true }}" muted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" style="display:block; width:100%; height:auto; border:1px solid #111; filter:{{ post.heroFilter }};"></video>
+          </sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ post.heroSlot }}" hint-placeholder-val="{{ true }}">
+        <div style="margin:24px 0 6px; border:1px solid #111; background:#fafafa; height:clamp(220px, 34vw, 400px); display:flex; align-items:center; justify-content:center; position:relative;">
+          <div style="font-size:12px; letter-spacing:0.04em; text-transform:uppercase; color:#777; border:1px dashed #c4c4c4; padding:8px 12px; margin:0 12px; text-align:center;">{{ post.heroSlot }}</div>
+          <div style="position:absolute; left:8px; bottom:6px; font-size:10px; letter-spacing:0.02em; color:#bbb;">Placeholder image</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ post.figref }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:12px; letter-spacing:0.02em; color:#777; margin-bottom:34px;">{{ post.figref }}</div>
+      </sc-if>
+      <sc-if value="{{ post.noFigref }}">
+        <div style="height:34px;"></div>
+      </sc-if>
+
+      <h2 style="font-family:Geist, 'Helvetica Neue', Helvetica, sans-serif; letter-spacing:-0.02em; font-weight:400; font-size:clamp(20px, 2.3vw, 27px); line-height:1.22; margin:0 0 6px; ">{{ post.title }}</h2>
+      <div style="font-size:12px; letter-spacing:0.02em; text-transform:uppercase; color:#777; margin-bottom:26px;">{{ post.deck }}</div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <sc-for list="{{ post.blocks }}" as="b" hint-placeholder-count="5">
+          <sc-if value="{{ b.isText }}" hint-placeholder-val="{{ true }}">
+            <p style="margin:0; font-family:Geist, 'Helvetica Neue', Helvetica, sans-serif; font-size:15px; line-height:1.65; letter-spacing:0; text-wrap:pretty;">{{ b.text }}</p>
+          </sc-if>
+          <sc-if value="{{ b.isHead }}">
+            <div style="margin-top:16px; border-top:1px solid #111; padding-top:7px; font-size:12.5px; letter-spacing:0.04em; text-transform:uppercase;">{{ b.text }}</div>
+          </sc-if>
+          <sc-if value="{{ b.isCode }}">
+            <div style="position:relative;" style-hover="--copy-opacity:1;">
+            <button type="button" onClick="{{ b.onCopy }}" style="position:absolute; top:8px; right:8px; z-index:2; opacity:var(--copy-opacity, 0); transition:opacity 120ms; border:1px solid #111; background:#fff; color:#111; font-family:'Geist Mono', monospace; font-size:10.5px; letter-spacing:0.04em; text-transform:uppercase; padding:5px 9px; cursor:pointer;" style-hover="background:#111; color:#fff;">{{ b.copyLabel }}</button>
+            <pre style="margin:0; border:1px solid #111; background:#f7f7f6; color:#2a2a2a; padding:18px 20px; overflow:auto; font-family:'Geist Mono', monospace; font-size:12.5px; line-height:1.7;">{{ b.nodes }}</pre>
+            </div>
+          </sc-if>
+          <sc-if value="{{ b.isList }}">
+            <ol style="margin:0; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:10px;">
+              <sc-for list="{{ b.items }}" as="it" hint-placeholder-count="3">
+                <li style="display:grid; grid-template-columns:26px minmax(0,1fr); gap:0 8px; font-family:Geist, 'Helvetica Neue', Helvetica, sans-serif; font-size:15px; line-height:1.65; text-wrap:pretty;">
+                  <span style="font-family:'Geist Mono', monospace; font-size:12px; color:#777; padding-top:3px;">{{ it.n }}</span>
+                  <span>{{ it.text }}</span>
+                </li>
+              </sc-for>
+            </ol>
+          </sc-if>
+          <sc-if value="{{ b.isBullets }}">
+            <ul style="margin:0; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:10px;">
+              <sc-for list="{{ b.items }}" as="it" hint-placeholder-count="2">
+                <li style="display:grid; grid-template-columns:26px minmax(0,1fr); gap:0 8px; font-family:Geist, 'Helvetica Neue', Helvetica, sans-serif; font-size:15px; line-height:1.65; text-wrap:pretty;">
+                  <span style="font-family:'Geist Mono', monospace; font-size:12px; color:#777; padding-top:3px;">—</span>
+                  <span>{{ it.text }}</span>
+                </li>
+              </sc-for>
+            </ul>
+          </sc-if>
+          <sc-if value="{{ b.isSpec }}">
+            <div style="border:1px dashed #111; padding:16px 18px; display:flex; flex-direction:column; gap:7px; font-family:'Geist Mono', monospace; font-size:13px; letter-spacing:0.02em; max-width:360px;">
+              <div>{{ b.line1 }}</div>
+              <div>{{ b.line2 }}</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ b.isVideo }}">
+            <figure style="margin:8px 0;">
+              <sc-if value="{{ b.src }}" hint-placeholder-val="{{ true }}">
+                <video src="{{ b.src }}" ref="{{ b.ref }}" autoPlay="{{ true }}" muted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" style="display:block; width:100%; height:auto; border:1px solid #111; background:#fafafa; pointer-events:none; filter:{{ b.filter }};"></video>
+              </sc-if>
+              <figcaption style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;">
+                <span>{{ b.figref }}</span><span>{{ b.text }}</span>
+              </figcaption>
+            </figure>
+          </sc-if>
+          <sc-if value="{{ b.isVideoPair }}">
+            <figure style="margin:8px 0;">
+              <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; align-items:start;">
+                <sc-for list="{{ b.items }}" as="v" hint-placeholder-count="2">
+                  <div style="min-width:0;">
+                    <sc-if value="{{ v.hasVideo }}">
+                      <video src="{{ v.src }}" ref="{{ v.ref }}" autoPlay="{{ true }}" muted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" style="display:block; width:100%; height:auto; border:1px solid #111; background:#fafafa; pointer-events:none; filter:{{ v.filter }};"></video>
+                    </sc-if>
+                    <div style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;"><span>{{ v.figref }}</span><span>{{ v.text }}</span></div>
+                    <sc-if value="{{ v.slot }}">
+                      <div style="border:1px solid #111; background:#fafafa; aspect-ratio:16 / 9; display:flex; align-items:center; justify-content:center;">
+                        <div style="font-size:11px; letter-spacing:0.04em; text-transform:uppercase; color:#777; border:1px dashed #c4c4c4; padding:6px 9px; text-align:center;">{{ v.slot }}</div>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </figure>
+          </sc-if>
+          <sc-if value="{{ b.isPhotoSmall }}">
+            <figure style="margin:8px 0; max-width:360px;">
+              <img src="{{ b.src }}" alt="{{ b.text }}" style="display:block; width:100%; height:auto; border:1px solid #111;">
+              <figcaption style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;">
+                <span>{{ b.figref }}</span><span>{{ b.text }}</span>
+              </figcaption>
+            </figure>
+          </sc-if>
+          <sc-if value="{{ b.isPhotoTall }}">
+            <figure style="margin:8px 0; max-width:560px;">
+              <img src="{{ b.src }}" alt="{{ b.text }}" style="display:block; width:100%; height:auto; border:1px solid #111;">
+              <figcaption style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;">
+                <span>{{ b.figref }}</span><span>{{ b.text }}</span>
+              </figcaption>
+            </figure>
+          </sc-if>
+          <sc-if value="{{ b.isFigRow3 }}">
+            <figure style="margin:8px 0;">
+              <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px;">
+                <sc-for list="{{ b.imgs }}" as="im" hint-placeholder-count="3">
+                  <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
+                    <img src="{{ im.src }}" alt="{{ im.credit }}" style="display:block; width:100%; aspect-ratio:3 / 4; object-fit:cover; border:1px solid #111;">
+                    <div style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; font-size:12px; line-height:1.5; color:#777;"><span>{{ im.figref }}</span><span>{{ im.credit }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </figure>
+          </sc-if>
+          <sc-if value="{{ b.isFigRow }}">
+            <figure style="margin:8px 0;">
+              <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px;">
+                <sc-for list="{{ b.imgs }}" as="im" hint-placeholder-count="2">
+                  <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
+                    <img src="{{ im.src }}" alt="{{ im.credit }}" style="display:block; width:100%; aspect-ratio:16 / 10; object-fit:cover; border:1px solid #111;">
+                    <div style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; font-size:12px; line-height:1.5; color:#777;"><span>{{ im.figref }}</span><span>{{ im.credit }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+              </figure>
+          </sc-if>
+          <sc-if value="{{ b.isTriptych }}">
+            <figure style="margin:8px 0;">
+              <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px;">
+                <img src="{{ b.srcA }}" alt="{{ b.text }}" style="display:block; width:100%; height:auto; border:1px solid #111;">
+                <img src="{{ b.srcB }}" alt="{{ b.text }}" style="display:block; width:100%; height:auto; border:1px solid #111;">
+                <img src="{{ b.srcC }}" alt="{{ b.text }}" style="display:block; width:100%; height:auto; border:1px solid #111;">
+              </div>
+              <figcaption style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;">
+                <span>{{ b.figref }}</span><span>{{ b.text }}</span>
+              </figcaption>
+            </figure>
+          </sc-if>
+          <sc-if value="{{ b.isPhotoPair }}">
+            <figure style="margin:8px 0; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px;">
+              <img src="{{ b.srcA }}" alt="{{ b.textA }}" style="display:block; width:100%; height:auto; border:1px solid #111;">
+              <img src="{{ b.srcB }}" alt="{{ b.textB }}" style="display:block; width:100%; height:auto; border:1px solid #111;">
+              <figcaption style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;">
+                <span>{{ b.figrefA }}</span><span>{{ b.textA }}</span>
+              </figcaption>
+              <figcaption style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;">
+                <span>{{ b.figrefB }}</span><span>{{ b.textB }}</span>
+              </figcaption>
+            </figure>
+          </sc-if>
+          <sc-if value="{{ b.isPhoto }}">
+            <figure style="margin:8px 0;">
+              <img src="{{ b.src }}" alt="{{ b.text }}" style="display:block; width:100%; height:auto; border:1px solid #111;">
+              <figcaption style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;">
+                <span>{{ b.figref }}</span><span>{{ b.text }}</span>
+              </figcaption>
+            </figure>
+          </sc-if>
+          <sc-if value="{{ b.isFig }}">
+            <figure style="margin:8px 0;">
+              <div style="border:1px solid #111; background:#fafafa; height:clamp(170px, 22vw, 260px); display:flex; align-items:center; justify-content:center;">
+                <div style="font-size:12px; letter-spacing:0.04em; text-transform:uppercase; color:#777; border:1px dashed #c4c4c4; padding:7px 11px; margin:0 12px; text-align:center;">{{ b.slot }}</div>
+              </div>
+              <figcaption style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;">
+                <span>{{ b.figref }}</span><span>{{ b.text }}</span>
+              </figcaption>
+            </figure>
+          </sc-if>
+        </sc-for>
+      </div>
+
+      <div style="margin-top:40px; border-top:1px solid #111; border-bottom:1px solid #111; height:6px;"></div>
+      <div style="display:flex; justify-content:space-between; gap:16px; margin-top:8px;">
+        <button type="button" onClick="{{ goPrev }}" style="{{ prevStyle }}" style-hover="color:#111;">← {{ prevLabel }}</button>
+        <button type="button" onClick="{{ goNext }}" style="{{ nextStyle }}" style-hover="color:#111;">{{ nextLabel }} →</button>
+      </div>
+    </article>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const ENTRIES = [
+  {
+    num: "06", title: "Expressive Mechanics", type: "PROJECT", date: "09.22", longDate: "SEP 22 2026",
+    hidden: true,
+    stamp: "A6 / 2026", figref: null,
+    heroSlot: "Hero — printed set, first pass",
+    deck: "Week 7 · Assignment 5 · Physical Computing",
+    blocks: [
+      { isText: true, text: "Placeholder text for the fifth entry. Open with the brief and the constraint that mattered most." },
+      { isHead: true, text: "Process" },
+      { isText: true, text: "Placeholder text. Walk through the steps, the failures, and the version that finally held." },
+      { isFig: true, figref: "6.1", slot: "Detail — support removal", text: "Placeholder caption for a process shot" }
+    ]
+  },
+  {
+    num: "05", title: "Zoetrope Prototype", type: "PROJECT", date: "09.22", longDate: "SEP 22 2026",
+    stamp: "A5 / 2026", figref: null,
+    heroVideoSrc: "images/zoe-motor-test-a.mp4", heroSlot: null,
+    deck: "Week 5 · PROJECT 1 · Physical Computing",
+    blocks: [
+      { isText: true, text: "For our Expressive Mechanics project, I knew I wanted to make a zoetrope. I started by building a prototype out of cardboard to get a better sense of the zoetrope’s scale, how the motor would function, and what adjustments would need to be made. This allowed me to quickly test the mechanics and alter the design before working with my final materials.\n" },
+      { isHead: true, text: "Inspiration" },
+      { isText: true, text: "As a film major in undergrad, I knew I wanted to incorporate something related to moving images into my project. I started exploring different ways of creating animation, including flipbooks, phenakistoscopes, and different types of zoetropes." },
+      { isText: true, text: "I was drawn to the zoetrope because it combines animation with a physical, mechanical object. I also thought it would be feasible to build within the scope of the project, while still being able to experiment with the mechanics and incorporate the Arduino. " },
+      { isText: true, text: "A zoetrope creates the illusion of motion by displaying a series of images viewed through narrow slits. As the drum rotates, the slits create brief interruptions in what we see, allowing our brains to perceive the individual images as a continuous animation." },
+      { isFigRow: true, imgs: [
+        { src: "images/inspo-zoetrope.jpg", figref: "5.1", credit: "Children with a zoetrope, mid-20th century." },
+        { src: "images/inspo-phenakistoscope.jpg", figref: "5.2", credit: "Viewing a phenakistoscope in a mirror, 19th-century engraving. " }
+      ] },
+      { isHead: true, text: "the Math" },
+      { isText: true, text: "The first step was figuring out the dimensions of the zoetrope. I knew I wanted it to be roughly 6 inches in diameter, which would leave enough room in the base to eventually hide the Arduino and various cables." },
+      { isText: true, text: "I decided to use 12 frames, which is about the minimum needed to create a smooth animation. This also kept the design relatively simple to construct and test." },
+      { isText: true, text: "With a diameter of 6 inches, I calculated the circumference:" },
+      { isSpec: true, line1: "Circumference = π × diameter", line2: "6 × π = 18.85 inches" },
+      { isText: true, text: "Dividing the circumference by 12 frames gave me approximately 1.57 inches per frame. This meant that each image, and its corresponding viewing slit, would need to be spaced approximately 1.57 inches/40 mm apart around the circumference of the drum. " },
+      { isText: true, text: "Zoetropes often use 2mm wide slits, but I made mine 3 mm wide so that more of the animation would be visible. I didn't want too much of the animation to be obscured by the walls of the drum." },
+      { isText: true, text: "However, there is a trade-off with the slot size. Wider slits show more of the image and allow more light in, but they can also make the animation look blurrier. Narrower slits help separate the images, but they also reduce the amount of light reaching the viewer, and therefore lower the visibility." },
+      { isText: true, text: "For the height, the general rule of thumb is that the drum should be twice the height of the animation, and the slits should be the same height as the animation strip." },
+      { isText: true, text: "I also knew that the animation needed to rotate at a sufficient speed to create the illusion of fluid motion. With 12 frames, I was aiming for a minimum of approximately 12 frames per second, meaning the drum would need to complete one full revolution every second." },
+      { isText: true, text: "" },
+      { isFigRow: true, imgs: [
+        { src: "images/zoetrope-notes-b.jpg", figref: "5.3", credit: "Calculations" },
+        { src: "images/zoetrope-notes-a.jpg", figref: "5.4", credit: "Initial sketch" }
+      ] },
+      { isHead: true, text: "Designing the Cardboard Prototype" },
+      { isText: true, text: "With the dimensions established, I created a template for the zoetrope. I printed it at the intended scale and used it as a guide to cut the individual pieces out of Cheerios box." },
+      { isText: true, text: "I wanted something quick that would allow me to test the proportions, the spacing of the slits, and the basic mechanics before committing to more permanent materials." },
+      { isText: true, text: "" },
+      { isFigRow3: true, imgs: [
+        { src: "images/zoe-paper.jpg", figref: "5.5", credit: "Printed template" },
+        { src: "images/zoe-cardboard.jpg", figref: "5.6", credit: "Cardboard pieces" },
+        { src: "images/zoe-drum.jpg", figref: "5.7", credit: "Assembled drum" }
+      ] },
+      { isHead: true, text: "Testing the Motor" },
+      { isText: true, text: "Once the cardboard structure was assembled, I connected the motor and began testing its rotation using basic Arduino code." },
+      { isText: true, text: "At this point, I wasn't trying to use p5 or implement any of the more complex code planned for the final project. I just wanted to test if the motor could rotate the zoetrope quickly enough and whether it could spin consistently." },
+      { isText: true, text: "" },
+      { isText: true, text: "The test was a success! The motor was capable of spinning even faster than I needed, which made the animation look super smooth. " },
+      { isVideo: true, src: "images/zoe-motor-test-b.mp4", figref: "5.8", text: "Close-up of the animation", filter: "url(#zoeMatch)" },
+      { isHead: true, text: "PROTOTYPE TAKEAWAYS" },
+      { isText: true, text: "The cardboard prototype helped me identify a few adjustments and mechanical considerations that I needed to address before moving into the final construction." },
+      { isList: true, items: [
+        { title: "Increase the height of the drum.", text: "Visually, I felt that the prototype looked a little too short. I wanted to increase the height slightly to create better proportions and give the animation more vertical space." },
+        { title: "Separate the motor from the structural weight.", text: "I realized that the motor could not support the weight of the zoetrope. Doing so would put  stress on the motor and make it harder for the structure to rotate smoothly. " },
+        { title: "Account for friction in the base.", text: "Since the cardboard prototype didn't incorporate a proper base or bearing system, I hadn't yet addressed the friction created by the rotating zoetrope. This would be an important consideration for the next iteration." },
+        { title: "Make the animation interchangeable.", text: "I was considering two approaches for the animation: laser cutting the frames directly into the individual panels or using interchangeable paper strips. While laser cutting would make the animation a permanent part of the drum, paper slides would allow me to easily swap out the frames and experiment. I decided that interchangeability was more important, so I went with removable animation strips." },
+        { title: "Increase the slit width.", text: "I decided to increase the slit width from 3 mm to 4 mm to allow more light into the zoetrope. This would make the animation easier to see, especially in lower-light situations." }
+      ] }
+    ]
+  },
+  {
+    num: "04", title: "3D Print Rings", type: "FABRICATION", date: "09.17", longDate: "SEP 17 2026",
+    stamp: "A4 / 2026", figref: null,
+    heroSrc: "images/ring3d-held.png", heroSlot: null,
+    deck: "Week 4 · Assignment 4 · Physical Computing",
+    blocks: [
+      { isText: true, text: "For this assignment, I designed a signet ring in Fusion and 3D printed it. This was my first time using Fusion and my first time using CAD software to 3D print." },
+      { isHead: true, text: "Sizing" },
+      { isText: true, text: "I reused the measurements from my laser-cut ring for this project, so I already had the dimensions I needed to build the ring in Fusion.\n" },
+      { isSpec: true, line1: "Inner diameter: 17.83 mm", line2: "Outer diameter: 23.83 mm" },
+      { isHead: true, text: "Designing in Fusion" },
+      { isText: true, text: "I started by creating the ring profile in Fusion using the measurements from my laser-cut ring, then extruded it to create the 3D shape. From there, I built up the top of the ring into a flat signet face.\n" },
+      { isText: true, text: "For the design, I wanted something simple, so I decided to put a star on the face of the ring. I imported a star SVG into Fusion and used it to create the embossed detail on top of the signet.\n" },
+      { isTriptych: true, srcA: "images/ring3d-step1.png", srcB: "images/ring3d-step2.png", srcC: "images/ring3d-step3.png", figref: "4.1", text: "Fusion model" },
+      { isText: true, text: "This was my first time using Fusion, so figuring out how to turn a flat sketch into a 3D object was the biggest learning curve. I had to get comfortable with extruding, selecting individual faces, and modifying the geometry as I built up the ring.\n" },
+      { isHead: true, text: "3D Printing" },
+      { isText: true, text: "Once I was happy with the model, I exported the file and loaded it into Bambu Studio to slice it for printing. Supports were added, and I printed it face down with the star signet side on the plate." },
+      { isPhoto: true, src: "images/ring3d-slice.png", figref: "4.2", text: "Preparing the ring for printing" },
+      { isText: true, text: "I then ran my first print. I ran into a filament error before I could start the print, so I had to troubleshoot the printer setup first." },
+      { isHead: true, text: "Final Ring" },
+      { isText: true, text: "Once the print finished, I had my 3D printed ring! Next time, I'd like to try printing on a smooth plate to try to eliminate some of the texture on the face of the ring. " },
+      { isPhoto: true, src: "images/ring3d-worn.png", figref: "4.3", text: "Final 3D printed ring" },
+      { isHead: true, text: "Notes" },
+      { isText: true, text: "The biggest challenge was learning Fusion. I found it much less intuitive than Illustrator, especially when it came to selecting faces and figuring out how sketches, extrusions, and 3D geometry worked together." }
+    ]
+  },
+  {
+    num: "03", title: "LEDs & Servo Motor", type: "ARDUINO", date: "09.15", longDate: "SEP 15 2026",
+    stamp: "A3 / 2026", figref: null,
+    heroSrc: "images/servo-ultrasonic-hero-cropped-v4.jpg", heroSlot: null,
+    deck: "Week 4 · Assignment 3 · Physical Computing",
+    blocks: [
+      { isText: true, text: "This week, we were incorporating a servo motor and an ultrasonic sensor into our Arduino tests. I wanted to make the servo sweep faster the closer someone gets to it, and slower as they move away." },
+      { isHead: true, text: "TESTing THE servo" },
+      { isText: true, text: "Before touching any sensors, I started with the simplest possible test: just getting the servo (a Miuzei MG90S micro servo) to move at all." },
+      { isCode: true, text: "#include <Servo.h>\n\nServo servo;\n\nvoid setup() {\n  servo.attach(9);\n}\n\nvoid loop() {\n  servo.write(0);\n  delay(1000);\n\n  servo.write(90);\n  delay(1000);\n\n  servo.write(180);\n  delay(1000);\n}" },
+      { isText: true, text: "This confirmed the wiring (signal → pin 9, power → 5V, ground → GND) was correct." },
+      { isText: true, text: "From there, I upgraded to a smooth continuous sweep instead of jumping between fixed points, using a for loop to step through each angle one degree at a time." },
+      { isCode: true, text: "#include <Servo.h>\n\nServo servo;\nint angle = 0;\n\nvoid setup() {\n  servo.attach(9);\n}\n\nvoid loop() {\n  for (angle = 0; angle <= 180; angle++) {\n    servo.write(angle);\n    delay(15);\n  }\n\n  for (angle = 180; angle >= 0; angle--) {\n    servo.write(angle);\n    delay(15);\n  }\n}" },
+      { isVideo: true, src: "images/servo-sweep-test.mp4", figref: "3.1", text: "Continuous servo sweep, before the sensor was added" },
+      { isHead: true, text: "Testing the ultrasonic sensor" },
+      { isText: true, text: "Same approach, isolating each new component before combining anything. Using an HC-SR04 ultrasonic sensor (Trig → pin 11, Echo → pin 12), I printed raw distance readings to the Serial Monitor:" },
+      { isCode: true, text: "const int trigPin = 11;\nconst int echoPin = 12;\n\nvoid setup() {\n  pinMode(trigPin, OUTPUT);\n  pinMode(echoPin, INPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(trigPin, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trigPin, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trigPin, LOW);\n\n  long duration = pulseIn(echoPin, HIGH);\n  long distance = duration * 0.034 / 2;\n\n  Serial.print(\"Distance: \");\n  Serial.print(distance);\n  Serial.println(\" cm\");\n\n  delay(200);\n}" },
+      { isText: true, text: "Troubleshooting note: this didn't work on the first try. The Serial Monitor just showed 0s. The fix ended up being wiring, not code: I'd initially wired the sensor through the breadboard, but the actual fix was connecting a 5V wire to the breadboard's positive rail and powering both the servo's red wire and the sensor's red wire off that shared rail, instead of however I'd originally split power between them. Once both components had a shared 5V/GND connection, the sensor started reading correctly." },
+      { isHead: true, text: "Combining speed and distance" },
+      { isText: true, text: "With both pieces working independently, I combined them: the sweep logic, plus a distance reading, using `map()` to convert distance into the delay between each degree of movement." },
+      { isCode: true, text: "#include <Servo.h>\n\nServo myServo;\nconst int trigPin = 11;\nconst int echoPin = 12;\n\nint angle = 0;\nint sweepDir = 1;\n\nvoid setup() {\n  myServo.attach(9);\n  pinMode(trigPin, OUTPUT);\n  pinMode(echoPin, INPUT);\n  Serial.begin(9600);\n}\n\nlong getDistance() {\n  digitalWrite(trigPin, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trigPin, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trigPin, LOW);\n\n  long duration = pulseIn(echoPin, HIGH);\n  long distance = duration * 0.034 / 2;\n  return distance;\n}\n\nvoid loop() {\n  long distance = getDistance();\n\n  // Range compressed to 2–25cm so the full fast/slow swing\n  // happens within normal arm's-length testing\n  distance = constrain(distance, 2, 25);\n\n  // closer = smaller delay = faster sweep\n  // farther = bigger delay = slower sweep\n  int sweepDelay = map(distance, 2, 25, 8, 80);\n\n  Serial.print(\"Distance: \");\n  Serial.print(distance);\n  Serial.print(\" cm | Delay: \");\n  Serial.println(sweepDelay);\n\n  angle += sweepDir;\n  if (angle >= 180 || angle <= 0) {\n    sweepDir = -sweepDir;\n  }\n\n  myServo.write(angle);\n  delay(sweepDelay);\n}" },
+      { isVideo: true, src: "images/servo-distance-demo.mp4", figref: "3.2", text: "Sweep speed responding to distance" },
+      { isText: true, text: "How it works: `getDistance()` reuses the exact same pulse/echo logic. `map(distance, 2, 25, 8, 80)` takes the distance reading and converts it into a delay value: 2cm maps to an 8ms delay (fast), 25cm maps to an 80ms delay (slow). That delay is then used between each 1° step of the sweep, so the whole motion speeds up or slows down based on how close something is to the sensor." },
+      { isText: true, text: "The delay range needed adjusting a couple of times. At first the fastest setting (1-2ms) made the servo tick and stutter instead of moving smoothly. It was being asked to change position faster than the motor could physically keep up. Raising the minimum delay to 8ms fixed the stutter while keeping it moving fast enough. I also compressed the distance range from 2–50cm down to 2–25cm so the full fast-to-slow effect was visible within a normal arm's reach, rather than needing to test from several feet away." },
+    ]
+  },
+  {
+    num: "02", title: "Laser Cut Rings", type: "FABRICATION", date: "09.10", longDate: "SEP 10 2026",
+    stamp: "A2 / 2026", figref: null,
+    heroSrc: "images/ring-hero.png", heroSlot: null,
+    deck: "Week 3 · Assignment 2 · Physical Computing",
+    blocks: [
+      { isText: true, text: "This week's assignment was to design and laser cut a ring. It was my first time ever using a laser cutter!" },
+      { isHead: true, text: "Sizing" },
+      { isText: true, text: "I started by measuring the circumference of my middle finger, then calculated the corresponding outer circumference so I had both numbers to design around." },
+      { isSpec: true, line1: "Inner diameter: 17.83 mm", line2: "Outer diameter: 23.83 mm" },
+      { isHead: true, text: "Designing in Illustrator" },
+      { isText: true, text: "I began with a simple ring in Illustrator, sized to match those measurements. Then I brought in an image of Coit Tower with a parrot in front of it. This was the trickiest part. I had to trace the image, then draw an outline around it by hand, that connected the artwork to the ring so it would hold together as one piece. It took a while to get the shape exactly how I wanted it." },
+      { isPhotoTall: true, src: "images/ring-illustrator.png", figref: "2.1", text: "Illustrator file" },
+      { isText: true, text: "Next, I made sure the right parts were outlined in blue, red, and black so the laser would treat them differently. Some details of Coit Tower needed to be etched into the surface rather than cut all the way through." },
+      { isHead: true, text: "Cutting: Round 1" },
+      { isText: true, text: "I sent the file to the laser cutting software and ran my first ring. Unfortunately, the inner hole didn't cut out. After some troubleshooting, I realized the stroke weight on that path wasn't set correctly for the laser to read it as a cut line." },
+      { isVideo: true, src: "images/ring-cutting.mp4", figref: "2.2", text: "The laser cutter in action" },
+      { isHead: true, text: "Iterating" },
+      { isText: true, text: "On my second attempt, everything cut through fine, but the engraving wasn't as deep or defined as on the first ring. It took four (!) more tries, increasing the engraving depth slightly each time before I was happy with the result." },
+      { isPhoto: true, src: "images/rings-six.png", figref: "2.3", text: "All seven rings side by side, showing the progression in depth" },
+      { isText: true, text: "On Chris's recommendation, I cut one extra so I'd have two rings I was happy with." },
+      { isHead: true, text: "Finishing" },
+      { isText: true, text: "I took both rings to the sanding station to sand off the burn marks left by the laser. Then I used compressed air to blow off any remaining wood dust, and they were ready to photograph." },
+      { isPhoto: true, src: "images/ring-worn.png", figref: "2.4", text: "Final ring, being worn" },
+      { isHead: true, text: "NOTES" },
+      { isText: true, text: "I encountered a couple of issues: the first was a file problem and the rest were depth adjustments, so I now know what to troubleshoot in the illustrator file itself, along with the machine settings when something goes wrong." }
+    ]
+  },
+  {
+    num: "01", title: "LEDS & LDR", type: "ARDUINO", date: "09.08", longDate: "SEP 08 2026",
+    stamp: "A1 / 2026", figref: null,
+    heroVideoSrc: "images/stoplight-hero.mp4", heroSlot: null, heroFilter: "brightness(0.97) contrast(1.03)",
+    deck: "Week 2 · Assignment 1 · Physical Computing",
+    blocks: [
+      { isHead: true, text: "Hello World + Blink" },
+      { isText: true, text: "I started by runinng the 'Hello world' and 'Blink' code independently. To combine them, I added `Serial.println(\"Hello, world!\");` to the 'Blink' code under the `void loop(){` command to loop both the blinking and the *Hello, World!* text." },
+      { isCode: true, text: "int led = 13;  // define a variable to hold the pin number of the internal LED\n\n// the setup function runs once when you press reset or power the board\nvoid setup() {\n  Serial.begin(9600);\n  // initialize digital pin LED_BUILTIN as an output.\n  pinMode(led, OUTPUT);\n}\n\n// the loop function runs over and over again forever\nvoid loop() {\n  digitalWrite(led, HIGH);\n  Serial.println(\"Hello, world!\");   // turn the LED on (HIGH is the voltage level)\n  delay(1000);                       // wait for a second\n  digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW\n  delay(1000);                       // wait for a second\n}" },
+      { isVideo: true, src: "images/hello-world-blink.mp4", figref: "1.1", text: "Hello World + Blink running together" },
+      { isHead: true, text: "Adding an External LED" },
+      { isText: true, text: "Next, I wired one external LED (with a resistor) to a digital pin, and adapted the Hello World + Blink code to control it instead of pin 13. `digitalWrite(pin, HIGH/LOW)` works the same regardless of which pin the LED is wired to." },
+      { isVideo: true, src: "images/external-led.mp4", figref: "1.2", text: "External LED wired to a digital pin" },
+      { isHead: true, text: "Two LEDs in Two Colors" },
+      { isText: true, text: "I then wired a second LED (different color) to its own digital pin, alongside the first, and extended the code to control both independently. Both LEDs successfully lit/blinked under code control, each on its own pin." },
+      { isVideo: true, src: "images/two-leds.mp4", figref: "1.3", text: "Two LEDs blinking independently" },
+      { isHead: true, text: "Light Sensor (LDR)" },
+      { isText: true, text: "I wired the LDR according to the tutorial diagram, connected it to analog pin A0, and used `analogRead()` inside `loop()` to continuously read and print its value with `Serial.println()`." },
+      { isText: true, text: "A live stream of numbers appeared in the Serial Monitor, changing as I covered/uncovered the sensor or shined a flashlight on it." },
+      { isText: true, text: "Variables that need a new value every loop cycle (like `sensorValue`) must be assigned inside `loop()` not calculated once at the top of the program, or they'll only ever reflect whatever the value was before the program started running." },
+      { isVideo: true, src: "images/light-sensor.mp4", figref: "1.4", text: "Live LDR readings in the Serial Monitor" },
+      { isHead: true, text: "Sensor-Controlled LED Intensity (Single Red LED)" },
+      { isText: true, text: "I tried to use the live LDR reading to control the brightness of a single LED, instead of fixed on/off." },
+      { isText: true, text: "I introduced `analogWrite()` (0–255 range) instead of `digitalWrite()`, and used `map()` to convert the LDR's raw sensor range into a corresponding brightness value for a red LED." },
+      { isText: true, text: "The red LED's brightness visibly changed in response to ambient light and got dimmer/brighter depending on how much light hit the LDR." },
+      { isVideo: true, src: "images/led-intensity.mp4", figref: "1.5", text: "LED brightness responding to ambient light" },
+      { isHead: true, text: "Full RGB LED + Sensor-Based Color Mixing + Morning/Night Messages" },
+      { isText: true, text: "I wanted to combine everything into an RGB LED that shifts color based on ambient light, paired with a different looped text: yellow and \"Good Morning, Alex!\" when bright, or blue and \"Goodnight, Alex!\" when dark." },
+      { isText: true, text: "How I did this:" },
+      { isList: true, items: [
+        "Wired the LED to three pins (9, 10, 11), each through its own resistor.",
+        "Tested each color channel individually with `analogWrite()` to confirm wiring before combining them.",
+        "Manually calibrated \"yellow\" and \"blue\" by eye, since the LED's internal channels weren't equally bright at the same signal. Red needed to be maxed out and green turned down significantly (R=255, G=40, B=0) to visually read as yellow, rather than green. Blue was more straightforward (R=0, G=0, B=255).",
+        "Used three separate `map()` calls (one per color channel) to translate the live `sensorValue` into the correct in-between mix between the \"blue\" (dark) and \"yellow\" (bright) endpoints.",
+        "Added `constrain()` to clamp `sensorValue` within the expected range before mapping, after discovering that values outside the declared range caused `map()` to output negative numbers, which made `analogWrite()` behave unpredictably (colors flipping/inverting at bright extremes).",
+        "Added an `if`/`else` conditional to print \"Good Morning, Alex!\" or \"Goodnight, Alex!\" to the Serial Monitor based on whether `sensorValue` was above or below a chosen brightness threshold."
+      ] },
+      { isText: true, text: "The LED now shifts smoothly between blue (dark) and yellow (bright) as ambient light changes, with the Serial Monitor printing a matching greeting." },
+      { isVideo: true, src: "images/rgb-greeting.mp4", figref: "1.6", text: "RGB LED shifting color with the Good Morning / Goodnight greeting" },
+      { isCode: true, text: "int led = 13;\nint ldrPin = A0;\nint sensorValue;\nint redPin = 9;\nint greenPin = 10;\nint bluePin = 11;\n\nvoid setup() {\n//initialize serial communications at a 9600 baud rate\nSerial.begin(9600);\npinMode(led, OUTPUT);\npinMode(redPin, OUTPUT);\npinMode(greenPin, OUTPUT);\npinMode(bluePin, OUTPUT);\n}\n\nvoid loop(){\nsensorValue = analogRead(ldrPin);\nsensorValue = constrain(sensorValue, 20, 87);\nif (sensorValue > 50) {\n  Serial.println(\"Good Morning, Alex!\");\n} else {\n  Serial.println(\"Goodnight, Alex!\");\n}\ndigitalWrite(led, HIGH);        // turn the LED on (HIGH is the voltage level)\ndelay(1000);                    // wait for a little while - do nothing else\ndigitalWrite(led, LOW);         // turn the LED off by making the voltage LOW\ndelay(1000);    \nint redValue = map(sensorValue, 20, 87, 0, 255);\nanalogWrite(redPin, redValue);           // wait for a little while - do nothing else\nint greenValue = map(sensorValue, 20, 87, 0, 40);\nanalogWrite(greenPin, greenValue);\nint blueValue = map(sensorValue, 20, 87, 255, 0);\nanalogWrite(bluePin, blueValue);\n}" },
+      { isHead: true, text: "NOTES" },
+      { isText: true, text: "`map()` doesn't clamp values to the range you give it. It go beyond 0–255 if the input exceeds the range you declared, which caused colors to invert unexpectedly at high brightness. `constrain()` solved this by capping the sensor value before it reached `map()`." }
+    ]
+  }
+];
+
+const C = {
+  comment: "#6b7380", string: "#3f8a2e", number: "#b3245e", keyword: "#1668c4",
+  type: "#1668c4", fn: "#c2185b", constant: "#9c1f5e", op: "#b3245e", plain: "#2a2a2a"
+};
+const KW = ["void","int","char","float","double","long","short","bool","boolean","byte","unsigned","const","static","if","else","for","while","do","switch","case","break","continue","return","struct","true","false","define","include"];
+const CONST = ["HIGH","LOW","INPUT","OUTPUT","INPUT_PULLUP","A0","A1","A2","A3","A4","A5","LED_BUILTIN"];
+
+// inline code: `backticks` become styled <code>, *stars* become italic
+function richText(s) {
+  const out = []; let key = 0;
+  s.split(/(`[^`]+`|\*[^*]+\*)/g).forEach(part => {
+    if (!part) return;
+    if (part[0] === "`" && part.length > 2) {
+      out.push(React.createElement("code", { key: key++, style: {
+        fontFamily: "'Geist Mono', monospace", fontSize: "0.88em",
+        background: "#f7f7f6", color: "#b3245e",
+        border: "1px solid #e4e4e2", borderRadius: "2px",
+        padding: "1px 5px", whiteSpace: "nowrap"
+      } }, part.slice(1, -1)));
+    } else if (part[0] === "*" && part.length > 2) {
+      out.push(React.createElement("em", { key: key++ }, part.slice(1, -1)));
+    } else out.push(part);
+  });
+  return out;
+}
+
+function highlight(src) {
+  const out = []; let i = 0, buf = "", key = 0;
+  const flush = () => { if (buf) { out.push(React.createElement("span", { key: key++, style: { color: C.plain } }, buf)); buf = ""; } };
+  const push = (txt, color) => { flush(); out.push(React.createElement("span", { key: key++, style: { color } }, txt)); };
+  while (i < src.length) {
+    const ch = src[i], two = src.slice(i, i + 2);
+    if (two === "//") { const e = src.indexOf("\n", i); const end = e === -1 ? src.length : e; push(src.slice(i, end), C.comment); i = end; continue; }
+    if (two === "/*") { const e = src.indexOf("*/", i); const end = e === -1 ? src.length : e + 2; push(src.slice(i, end), C.comment); i = end; continue; }
+    if (ch === '"' || ch === "'") {
+      let j = i + 1;
+      while (j < src.length && src[j] !== ch) { if (src[j] === "\\") j++; j++; }
+      push(src.slice(i, Math.min(j + 1, src.length)), C.string); i = j + 1; continue;
+    }
+    if (/[0-9]/.test(ch) && !/[A-Za-z_0-9]/.test(src[i - 1] || "")) {
+      let j = i; while (j < src.length && /[0-9a-fA-FxX.]/.test(src[j])) j++;
+      push(src.slice(i, j), C.number); i = j; continue;
+    }
+    if (/[A-Za-z_#]/.test(ch)) {
+      let j = i; while (j < src.length && /[A-Za-z_0-9#]/.test(src[j])) j++;
+      const word = src.slice(i, j);
+      let k = j; while (/\s/.test(src[k])) k++;
+      if (KW.indexOf(word.replace("#", "")) > -1) push(word, C.keyword);
+      else if (CONST.indexOf(word) > -1) push(word, C.constant);
+      else if (src[k] === "(") push(word, C.fn);
+      else buf += word;
+      i = j; continue;
+    }
+    if ("+-*/%=<>!&|^~".indexOf(ch) > -1) { push(ch, C.op); i++; continue; }
+    buf += ch; i++;
+  }
+  flush();
+  return out;
+}
+
+class Component extends DCLogic {
+  state = { i: ENTRIES.findIndex(e => !e.hidden), blobs: {}, copied: null };
+  componentDidMount() {
+    const srcs = [];
+    ENTRIES.forEach(e => e.blocks.forEach(b => { if (b.isVideo && b.src) srcs.push(b.src); if (b.isVideoPair) b.items.forEach(v => { if (v.src) srcs.push(v.src); }); }));
+    ENTRIES.forEach(e => { if (e.heroVideoSrc) srcs.push(e.heroVideoSrc); });
+    srcs.forEach(src => {
+      fetch(src).then(r => r.blob()).then(bl => {
+        const url = URL.createObjectURL(bl);
+        this.setState(s => ({ blobs: Object.assign({}, s.blobs, { [src]: url }) }));
+      }).catch(() => {});
+    });
+  }
+  select(i) {
+    this.setState({ i });
+    const m = document.scrollingElement;
+    if (m) m.scrollTop = 0;
+  }
+  renderVals() {
+    const i = this.state.i;
+    const entries = ENTRIES.map((e, idx) => ({
+      num: e.num, title: e.title, type: e.type, date: e.date,
+      onSelect: () => this.select(idx),
+      rowStyle: "display:grid; grid-template-columns:18px minmax(0,1fr) 84px 40px; gap:0 10px; align-items:baseline; width:100%; text-align:left; padding:5px 0; border:0; border-bottom:1px solid #111; background:" +
+        "transparent" +
+        "; font-family:inherit; color:#111; cursor:pointer; transition:color 120ms;",
+      titleStyle: "font-size:11px; line-height:1.45; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-transform:uppercase; letter-spacing:0.02em;"
+    })).filter((e, idx) => !ENTRIES[idx].hidden);
+    const btn = (disabled) => "border:0; background:none; padding:4px 0; font-family:inherit; font-size:12px; letter-spacing:0.04em; text-transform:uppercase; color:" +
+      (disabled ? "#ccc" : "#777") + "; cursor:" + (disabled ? "default" : "pointer") + ";";
+    let pi = i - 1; while (pi >= 0 && ENTRIES[pi].hidden) pi--;
+    let ni = i + 1; while (ni < ENTRIES.length && ENTRIES[ni].hidden) ni++;
+    const prev = ENTRIES[pi], next = ENTRIES[ni];
+    const base = ENTRIES[i];
+    const post = Object.assign({}, base, {
+      noFigref: !base.figref,
+      heroFilter: base.heroFilter || "none",
+      heroVideoBlob: base.heroVideoSrc ? (this.state.blobs[base.heroVideoSrc] || null) : null,
+      heroVideoRef: el => {
+        if (!el || el.dataset.watched) return;
+        el.dataset.watched = "1";
+        el.muted = true;
+        const io = new IntersectionObserver(es => es.forEach(e => {
+          if (e.isIntersecting) { const p = el.play(); if (p && p.catch) p.catch(() => {}); }
+          else el.pause();
+        }), { threshold: 0.25 });
+        io.observe(el);
+      },
+      blocks: base.blocks.map((b, bi) => (b.isList || b.isBullets) ? Object.assign({}, b, {
+        items: b.items.map((t, ti) => ({ n: b.isList ? ("0" + (ti + 1)).slice(-2) : "", title: null, text: richText(typeof t === "object" ? t.title + " " + t.text : t) }))
+      }) : b.isText ? Object.assign({}, b, { text: richText(b.text) }) : b.isCode ? Object.assign({}, b, {
+        nodes: highlight(b.text),
+        copyLabel: this.state.copied === bi ? "Copied" : "Copy",
+        onCopy: () => {
+          const done = () => { this.setState({ copied: bi }); setTimeout(() => this.setState(s => s.copied === bi ? { copied: null } : {}), 1400); };
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(b.text).then(done, done);
+          else {
+            const ta = document.createElement("textarea");
+            ta.value = b.text; document.body.appendChild(ta); ta.select();
+            try { document.execCommand("copy"); } catch (e) {}
+            document.body.removeChild(ta); done();
+          }
+        }
+      }) : b.isVideoPair ? Object.assign({}, b, {
+        items: b.items.map(v => ({
+          slot: v.slot || null,
+          figref: v.figref || "",
+          text: v.text || "",
+          filter: v.filter || "none",
+          hasVideo: !!(v.src && this.state.blobs[v.src]),
+          src: v.src ? (this.state.blobs[v.src] || null) : null,
+          ref: el => {
+            if (!el || el.dataset.watched) return;
+            el.dataset.watched = "1";
+            el.muted = true;
+            const io = new IntersectionObserver(es => es.forEach(e => {
+              if (e.isIntersecting) { const p = el.play(); if (p && p.catch) p.catch(() => {}); }
+              else el.pause();
+            }), { threshold: 0.25 });
+            io.observe(el);
+          }
+        }))
+      }) : b.isVideo ? Object.assign({}, b, {
+        filter: b.filter || "contrast(1.07) saturate(1.04)",
+        src: this.state.blobs[b.src] || null,
+        ref: el => {
+          if (!el || el.dataset.watched) return;
+          el.dataset.watched = "1";
+          el.muted = true;
+          const io = new IntersectionObserver(es => es.forEach(e => {
+            if (e.isIntersecting) { const p = el.play(); if (p && p.catch) p.catch(() => {}); }
+            else el.pause();
+          }), { threshold: 0.25 });
+          io.observe(el);
+        }
+      }) : b)
+    });
+    return {
+      entries, post,
+      goPrev: () => next && this.select(ni),
+      goNext: () => prev && this.select(pi),
+      prevLabel: next ? "Entry " + next.num : "Oldest entry",
+      nextLabel: prev ? "Entry " + prev.num : "Newest entry",
+      prevStyle: btn(!next), nextStyle: btn(!prev)
+    };
+  }
+}
+</script>
+</body>
+</html>
