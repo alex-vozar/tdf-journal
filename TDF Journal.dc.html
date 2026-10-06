@@ -72,7 +72,7 @@
     </div>
 
     <article>
-      <svg width="0" height="0" style="position:absolute;" aria-hidden="true"><filter id="zoeMatch" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncR type="linear" slope="1.40" intercept="-0.49"></feFuncR><feFuncG type="linear" slope="1.03" intercept="-0.155"></feFuncG><feFuncB type="linear" slope="0.875" intercept="-0.035"></feFuncB></feComponentTransfer></filter></svg>
+      <svg width="0" height="0" style="position:absolute;" aria-hidden="true"><filter id="zoeCapture" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncR type="linear" slope="1.114" intercept="0"></feFuncR><feFuncG type="linear" slope="1.107" intercept="-0.055"></feFuncG><feFuncB type="linear" slope="1.157" intercept="-0.12"></feFuncB></feComponentTransfer><feComponentTransfer><feFuncR type="gamma" amplitude="1" exponent="0.85" offset="0"></feFuncR><feFuncG type="gamma" amplitude="1" exponent="0.85" offset="0"></feFuncG><feFuncB type="gamma" amplitude="1" exponent="0.85" offset="0"></feFuncB></feComponentTransfer></filter><filter id="zoeMatch" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncR type="linear" slope="1.40" intercept="-0.49"></feFuncR><feFuncG type="linear" slope="1.03" intercept="-0.155"></feFuncG><feFuncB type="linear" slope="0.875" intercept="-0.035"></feFuncB></feComponentTransfer></filter></svg>
       <sc-if value="{{ post.heroSrc }}">
         <div style="margin:24px 0 6px;">
           <img src="{{ post.heroSrc }}" alt="{{ post.title }}" style="display:block; width:100%; height:auto; border:1px solid #111;">
@@ -151,6 +151,14 @@
               </figcaption>
             </figure>
           </sc-if>
+          <sc-if value="{{ b.isStabVideo }}">
+            <figure style="margin:8px 0;">
+              <canvas ref="{{ b.ref }}" width="1280" height="812" style="display:block; width:100%; height:auto; border:1px solid #111; background:#fafafa;"></canvas>
+              <figcaption style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;">
+                <span>{{ b.figref }}</span><span>{{ b.text }}</span>
+              </figcaption>
+            </figure>
+          </sc-if>
           <sc-if value="{{ b.isVideoPair }}">
             <figure style="margin:8px 0;">
               <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; align-items:start;">
@@ -192,6 +200,31 @@
                 <sc-for list="{{ b.imgs }}" as="im" hint-placeholder-count="3">
                   <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
                     <img src="{{ im.src }}" alt="{{ im.credit }}" style="display:block; width:100%; aspect-ratio:3 / 4; object-fit:cover; border:1px solid #111;">
+                    <div style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; font-size:12px; line-height:1.5; color:#777;"><span>{{ im.figref }}</span><span>{{ im.credit }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </figure>
+          </sc-if>
+          <sc-if value="{{ b.isPair }}">
+            <figure style="margin:8px 0;">
+              <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px;">
+                <sc-for list="{{ b.imgs }}" as="im" hint-placeholder-count="2">
+                  <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
+                    <img src="{{ im.src }}" alt="{{ im.credit }}" style="display:block; width:100%; aspect-ratio:4 / 3; object-fit:cover; border:1px solid #111;">
+                    <div style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; font-size:12px; line-height:1.5; color:#777;"><span>{{ im.figref }}</span><span>{{ im.credit }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </figure>
+          </sc-if>
+          <sc-if value="{{ b.isRow3Short }}">
+            <figure style="margin:8px 0;">
+              <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px;">
+                <sc-for list="{{ b.imgs }}" as="im" hint-placeholder-count="3">
+                  <div style="display:flex; flex-direction:column; gap:6px; min-width:0;">
+                    <sc-if value="{{ im.notVid }}" hint-placeholder-val="{{ true }}"><img src="{{ im.src }}" alt="{{ im.credit }}" style="display:block; width:100%; aspect-ratio:1 / 1; object-fit:cover; object-position:{{ im.pos }}; border:1px solid #111;"></sc-if>
+                    <sc-if value="{{ im.isVid }}"><div style="position:relative; width:100%; aspect-ratio:1 / 1; overflow:hidden; border:1px solid #111; background:#e6e6e6;"><video ref="{{ im.ref }}" muted="" playsinline="" loop="" preload="auto" style="position:absolute; left:0; top:0; width:213.333%; height:auto; transform-origin:0 0; will-change:transform; filter:saturate(1.04) contrast(1.03);"></video></div></sc-if>
                     <div style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; font-size:12px; line-height:1.5; color:#777;"><span>{{ im.figref }}</span><span>{{ im.credit }}</span></div>
                   </div>
                 </sc-for>
@@ -242,6 +275,14 @@
               </figcaption>
             </figure>
           </sc-if>
+          <sc-if value="{{ b.isLutVideo }}">
+            <figure style="margin:8px 0;">
+              <video ref="{{ b.ref }}" muted="" playsinline="" loop="" preload="auto" style="display:block; width:100%; aspect-ratio:1800 / 1091; object-fit:cover; border:1px solid #111; background:#b9ab95;"></video>
+              <figcaption style="display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; margin-top:7px; font-size:12px; line-height:1.5; color:#777;">
+                <span>{{ b.figref }}</span><span>{{ b.text }}</span>
+              </figcaption>
+            </figure>
+          </sc-if>
           <sc-if value="{{ b.isFig }}">
             <figure style="margin:8px 0;">
               <div style="border:1px solid #111; background:#fafafa; height:clamp(170px, 22vw, 260px); display:flex; align-items:center; justify-content:center;">
@@ -267,16 +308,45 @@
 <script type="text/x-dc" data-dc-script data-props="{}">
 const ENTRIES = [
   {
-    num: "06", title: "Expressive Mechanics", type: "PROJECT", date: "09.22", longDate: "SEP 22 2026",
-    hidden: true,
+    num: "06", title: "Zoetrope Final", type: "PROJECT", date: "09.24", longDate: "SEP 24 2026",
     stamp: "A6 / 2026", figref: null,
-    heroSlot: "Hero — printed set, first pass",
-    deck: "Week 7 · Assignment 5 · Physical Computing",
+    heroSrc: "images/zoe-final-hero-v15.jpg", heroSlot: null,
+    deck: "Week 5 · PROJECT 1 · Physical Computing",
     blocks: [
-      { isText: true, text: "Placeholder text for the fifth entry. Open with the brief and the constraint that mattered most." },
-      { isHead: true, text: "Process" },
-      { isText: true, text: "Placeholder text. Walk through the steps, the failures, and the version that finally held." },
-      { isFig: true, figref: "6.1", slot: "Detail — support removal", text: "Placeholder caption for a process shot" }
+      { isText: true, text: "After the cardboard prototype, I moved on to building the final wooden zoetrope. This meant testing the joinery, solving the friction problem with bearings and a 3D-printed base, and connecting the motor to p5 so the zoetrope could respond to the viewer." },
+      { isHead: true, text: "Slot Tests" },
+      { isText: true, text: "Before cutting the final pieces in wood, I ran a series of tests for the real build. The first was the slots: I wanted the zoetrope to hold together without glue, so the slots and tabs had to fit tightly enough to stay put." },
+      { isText: true, text: "Since the laser cutter has a margin of error, I cut test pieces with a range of slot sizes, checked each one for fit, and then updated the files with the correct dimensions. Once I was happy with the fit, I laser cut all the pieces and assembled the final drum." },
+      { isRow3Short: true, imgs: [
+        { src: "images/zoe-slot-tests-sm.jpg", figref: "6.1", credit: "Slot size tests", pos: "50% 50%" },
+        { src: "images/zoe-laser-cut.jpg", figref: "6.2", credit: "Laser cutting the pieces", pos: "50% 50%" },
+        { src: "images/zoe-drum-vs-proto.jpg", figref: "6.3", credit: "Cardboard prototype vs. assembled drum", pos: "47% 38%" }
+      ] },
+      { isHead: true, text: "Bearings & Base" },
+      { isText: true, text: "I realized friction between the base and the wooden drum was going to be an issue, so I needed to use bearings. I prototyped the bearing holder out of cardboard, then 3D printed an initial test. In that test the bearing sat too low and wasn’t exposed at the top, so I moved the hole higher." },
+      { isRow3Short: true, imgs: [
+        { src: "images/zoe-bearing-sketch.jpg", figref: "6.4", credit: "Bearing holder sketch", pos: "50% 50%" },
+        { src: "images/zoe-bearing-3d-v4.jpg", figref: "6.5", credit: "Bearing holder 3D file", pos: "50% 50%" },
+        { src: "images/zoe-bearing-compare-v4.jpg", figref: "6.6", credit: "Prototype bearing vs. 3D-printed test", pos: "50% 50%" }
+      ] },
+      { isText: true, text: "I also 3D printed a base with a hole for cables, big enough to fit the Arduino and the rest of the electronics. Once the final bearing holders were printed, I attached them to the base exactly 120 degrees apart and at the same height, slightly above the top of the base, so they would support the weight of the drum instead of the motor." },
+      { isText: true, text: "To find the exact center of the base, I laser cut a cardboard template to its dimensions with a small hole in the middle, so I could mark the center with a Sharpie. Then I attached the servo horn to a laser-cut circle and fixed it to that center point. This was critical so the motor was attached at the exact center and the motion would not be off." },
+      { isText: true, text: "Finally, I tested the drum on the base to make sure it rotated without friction." },
+      { isPair: true, imgs: [
+        { src: "images/zoe-base-bearings-v3.jpg", figref: "6.7", credit: "Attaching the 3D-printed bearings to base" },
+        { src: "images/zoe-center-template.jpg", figref: "6.8", credit: "Cardboard template and servo horn mounted at the center" }
+      ] },
+      { isHead: true, text: "Final Prototype" },
+      { isText: true, text: "The final zoetrope is a laser-cut wooden drum that slots together without glue, resting on three bearings set into a 3D-printed base that hides the Arduino, motor, and cables." },
+      { isText: true, text: "Twelve 4 mm slits line up with a 12-frame animation strip of a hopping rabbit, and the strips are interchangeable, so the drum can play different animations. When the motor spins the drum, looking through the slits turns the separate frames into one continuous motion." },
+      { isRow3Short: true, imgs: [
+        { src: "images/zoe-final-side-v6.jpg", figref: "6.9", credit: "Final wooden zoetrope", pos: "50% 50%" },
+        { vid: "images/zoe-capture-2.mp4", stab: "images/zoe-capture-2-stab.json", figref: "6.10", credit: "Top view with animation strip" },
+        { src: "images/zoe-final-slit.jpg", figref: "6.11", credit: "View through the slit", pos: "42% 50%" }
+      ] },
+      { isHead: true, text: "Expressive Mechanics" },
+      { isText: true, text: "Using p5 code, the zoetrope tracks the position of your eyes as you walk toward it. As you approach, the drum spins faster until you are within a foot of it, where it reaches its maximum viewing speed. As you walk away, it slows down until it eventually stops." },
+      { isLutVideo: true, src: "images/zoe-expressive.mp4", lut: "images/zoe-expressive-lut.json", figref: "6.12", text: "p5 sketch tracking the viewer’s eyes to control the motor" }
     ]
   },
   {
@@ -523,6 +593,32 @@ function highlight(src) {
 
 class Component extends DCLogic {
   state = { i: ENTRIES.findIndex(e => !e.hidden), blobs: {}, copied: null };
+  vidSetup(el, src, onFrame) {
+    if (!el || el.dataset.watched) return;
+    el.dataset.watched = "1";
+    el.muted = true;
+    fetch(src).then(r => r.blob()).then(bl => { el.src = URL.createObjectURL(new Blob([bl], { type: "video/mp4" })); }).catch(() => { el.src = src; });
+    if (onFrame && el.requestVideoFrameCallback) { const cb = (now, meta) => { onFrame(meta.mediaTime); el.requestVideoFrameCallback(cb); }; el.requestVideoFrameCallback(cb); }
+    else if (onFrame) { const loop = () => { onFrame(el.currentTime); requestAnimationFrame(loop); }; requestAnimationFrame(loop); }
+    const play = () => { const p = el.play(); if (p && p.catch) p.catch(() => {}); };
+    new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) play(); else el.pause(); }), { threshold: 0.2 }).observe(el);
+  }
+  lutVidRef(b) {
+    this._lv = this._lv || {};
+    return this._lv[b.src] || (this._lv[b.src] = el => this.vidSetup(el, b.src));
+  }
+  cropVidRef(im) {
+    this._cv = this._cv || {};
+    if (this._cv[im.vid]) return this._cv[im.vid];
+    let crop = null;
+    fetch(im.stab).then(r => r.json()).then(j => { crop = j.crop; }).catch(() => {});
+    const fn = el => this.vidSetup(el, im.vid, t => {
+      const c = crop ? crop[Math.min(crop.length - 1, Math.max(0, Math.floor(t * 30)))] : [510, 160];
+      el.style.transform = "translate(" + (-c[0] / 19.2).toFixed(3) + "%," + (-c[1] / 10.8).toFixed(3) + "%)";
+    });
+    this._cv[im.vid] = fn;
+    return fn;
+  }
   componentDidMount() {
     const srcs = [];
     ENTRIES.forEach(e => e.blocks.forEach(b => { if (b.isVideo && b.src) srcs.push(b.src); if (b.isVideoPair) b.items.forEach(v => { if (v.src) srcs.push(v.src); }); }));
@@ -603,6 +699,46 @@ class Component extends DCLogic {
             io.observe(el);
           }
         }))
+      }) : b.isLutVideo ? Object.assign({}, b, { ref: this.lutVidRef(b) }) : b.isRow3Short ? Object.assign({}, b, {
+        imgs: b.imgs.map(im => im.vid ? Object.assign({}, im, { isVid: true, notVid: false, ref: this.cropVidRef(im) }) : Object.assign({}, im, { isVid: false, notVid: true }))
+      }) : b.isStabVideo ? Object.assign({}, b, {
+        ref: el => {
+          if (!el || el.dataset.watched) return;
+          el.dataset.watched = "1";
+          const v = document.createElement("video");
+          v.muted = true; v.playsInline = true; v.preload = "auto"; v.setAttribute("playsinline", ""); v.setAttribute("muted", "");
+          v.style.cssText = "position:absolute;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none;";
+          el.parentNode.style.position = "relative";
+          el.parentNode.appendChild(v);
+          fetch(b.src).then(r => r.blob()).then(bl => { v.src = URL.createObjectURL(new Blob([bl], { type: "video/mp4" })); v.load(); }).catch(() => { v.src = b.src; });
+          const ctx = el.getContext("2d", { willReadFrequently: true });
+          const W = el.width, H = el.height, M = 30, SW = 1668 - 2 * M, SH = Math.round(SW * H / W);
+          const SY = Math.round((1080 - SH) / 2);
+          const curve = pts => { const L = new Uint8ClampedArray(256); for (let i = 0; i < 256; i++) { let k = 0; while (k < pts.length - 2 && i > pts[k + 1][0]) k++; const [x0, y0] = pts[k], [x1, y1] = pts[k + 1]; L[i] = y0 + (y1 - y0) * (i - x0) / (x1 - x0); } return L; };
+          const LR = curve([[0,0],[63,45],[134,180],[212,236],[255,255]]);
+          const LG = curve([[0,0],[76,50],[125,160],[226,236],[255,255]]);
+          const LB = curve([[0,0],[89,55],[110,120],[229,233],[255,255]]);
+          let off = null;
+          fetch(b.stab).then(r => r.json()).then(j => { off = j.off; }).catch(() => {});
+          const draw = t => {
+            if (v.readyState < 2) return;
+            const i = Math.max(0, Math.floor(t * 30));
+            const o = off ? off[Math.min(off.length - 1, i)] : [0, 0];
+            ctx.drawImage(v, M + o[0], SY + o[1], SW, SH, 0, 0, W, H);
+            const id = ctx.getImageData(0, 0, W, H), d = id.data;
+            for (let k = 0; k < d.length; k += 4) { d[k] = LR[d[k]]; d[k + 1] = LG[d[k + 1]]; d[k + 2] = LB[d[k + 2]]; }
+            ctx.putImageData(id, 0, 0);
+          };
+          const toStart = () => { try { v.currentTime = b.start || 0; } catch (e) {} };
+          const play = () => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+          v.addEventListener("loadedmetadata", toStart);
+          v.addEventListener("seeked", () => draw(v.currentTime));
+          v.addEventListener("ended", () => { toStart(); play(); });
+          if (v.requestVideoFrameCallback) { const cb = (now, meta) => { draw(meta.mediaTime); v.requestVideoFrameCallback(cb); }; v.requestVideoFrameCallback(cb); }
+          else { let last = -1; const loop = () => { if (v.currentTime !== last) { last = v.currentTime; draw(last); } requestAnimationFrame(loop); }; requestAnimationFrame(loop); }
+          const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) play(); else v.pause(); }), { threshold: 0.25 });
+          io.observe(el);
+        }
       }) : b.isVideo ? Object.assign({}, b, {
         filter: b.filter || "contrast(1.07) saturate(1.04)",
         src: this.state.blobs[b.src] || null,
@@ -610,6 +746,13 @@ class Component extends DCLogic {
           if (!el || el.dataset.watched) return;
           el.dataset.watched = "1";
           el.muted = true;
+          if (b.start) {
+            el.loop = false;
+            const toStart = () => { el.currentTime = b.start; };
+            el.addEventListener("loadedmetadata", toStart);
+            el.addEventListener("ended", () => { toStart(); const p = el.play(); if (p && p.catch) p.catch(() => {}); });
+            setTimeout(() => { if (el.readyState >= 1) toStart(); else el.load(); }, 0);
+          }
           const io = new IntersectionObserver(es => es.forEach(e => {
             if (e.isIntersecting) { const p = el.play(); if (p && p.catch) p.catch(() => {}); }
             else el.pause();
