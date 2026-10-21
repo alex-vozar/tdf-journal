@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wikipedia Live Edits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a printed instrument card. Left: the reading (percent vs normal, edits/min, 30-min trace).
+   Right: the live ticker of edits, like paper running past the slits. */
+:root{
+  --paper:#f3f2ee; --ink:#161616; --muted:#6d6b66; --rule:#d9d7d1; --up:#1f6f4a; --down:#a33a2a; --accent:#161616;
+  --display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#121211; --ink:#ecebe6; --muted:#9a978f; --rule:#2c2b29; --up:#6fcf9f; --down:#ef8a7a; --accent:#ecebe6; color-scheme:dark } }
+:root[data-theme="dark"]{ --paper:#121211; --ink:#ecebe6; --muted:#9a978f; --rule:#2c2b29; --up:#6fcf9f; --down:#ef8a7a; --accent:#ecebe6; color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 var(--sans);padding:24px}
+.wrap{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:clamp(20px,4vw,56px);row-gap:clamp(20px,3vw,40px);height:100%}
+@media (max-width:860px){.wrap{grid-template-columns:1fr;grid-template-rows:auto;height:auto}}
+
+header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:clamp(12px,2vh,22px)}
+button{font:500 12px/1 var(--mono);letter-spacing:.04em;color:var(--ink);background:transparent;border:1px solid var(--ink);border-radius:999px;padding:7px 12px;cursor:pointer}
+button:hover,button:focus-visible{background:var(--ink);color:var(--paper);outline:none}
+.src{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.brand{font:400 clamp(28px,3.2vw,40px)/1 var(--display);letter-spacing:-.01em}
+.brand em{font-style:italic}
+.status{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.live .dot{background:var(--up);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+
+.reading{display:flex;flex-direction:column;gap:20px;min-width:0;align-self:center;padding-bottom:clamp(0px,3vh,32px)}
+.label{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.big{font:400 clamp(72px,11vw,120px)/.9 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:.08em}
+.big .unit{font-size:.4em;color:var(--muted)}
+.trend{display:inline-flex;align-items:center;gap:8px;font:500 13px/1 var(--mono);padding:6px 10px;border:1px solid currentColor;border-radius:999px;align-self:flex-start}
+.trend.up{color:var(--up)} .trend.down{color:var(--down)} .trend.flat{color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding-block:14px}
+.stat .v{font:400 34px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.stat .s{font:400 12px/1.3 var(--sans);color:var(--muted)}
+.chart{position:relative;width:100%;aspect-ratio:16/6;max-width:100%}
+canvas{width:100%;height:100%;display:block}
+.note{font-size:13px;color:var(--muted);max-width:62ch}
+
+.feed{display:flex;flex-direction:column;min-width:0;min-height:0;height:100%}
+.feedhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--ink)}
+.count{font:500 12px/1 var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+ol{list-style:none;margin:0;padding:0;overflow:hidden;flex:1;min-height:0;
+   mask-image:linear-gradient(to bottom,#000 80%,transparent);-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent)}
+@media (max-width:860px){ol{flex:none;height:300px;max-height:none}}
+li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--rule);animation:in .5s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(-6px)}}
+.t{white-space:nowrap;font:400 12px/1 var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.title a{color:var(--ink);text-decoration:none;font-weight:500}
+.title a:hover,.title a:focus-visible{text-decoration:underline;outline:none}
+.who{color:var(--muted);font-size:12px;margin-left:6px}
+.delta{font:500 12px/1 var(--mono);font-variant-numeric:tabular-nums}
+.delta.pos{color:var(--up)} .delta.neg{color:var(--down)} .delta.zero{color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">Wikipedia <em>live edits</em></div>
+  </header>
+
+  <section class="reading" aria-live="polite">
+    <div class="big" id="pct">—<span class="unit">%</span></div>
+    <div class="trend flat" id="trend">waiting for the first reading</div>
+    <div class="src" id="stamp"></div>
+    <div class="stats">
+      <div class="stat"><div class="v" id="rate">—</div><div class="s">human edits per minute, last 2 min</div></div>
+      <div class="stat"><div class="v" id="base">—</div><div class="s">normal (average of the last 15 min)</div></div>
+      <div class="stat"><div class="v" id="level">—</div><div class="s">animation speed, 0 calm to 1 busy</div></div>
+    </div>
+    <div>
+      <div class="chart"><canvas id="chart" aria-label="Edits per minute over the last 30 minutes"></canvas></div>
+    </div>
+  </section>
+
+  <section class="feed">
+    <div class="feedhead"><div class="label">Edits as they happen</div><div class="count" id="seen">0 edits since this page opened</div></div>
+    <ol id="list"></ol>
+  </section>
+</div>
+
+<script>
+const API = "https://en.wikipedia.org/w/api.php?action=query&list=recentchanges&rctype=edit&rcshow=!bot&rcprop=timestamp&rclimit=500&format=json&origin=*";
+const STREAM = "https://stream.wikimedia.org/v2/stream/recentchange";
+// Same as the machine: at every :00 and :30 (UTC), count human edits in the 2 min and 15 min before that moment
+const NOW_MIN = 2, NORMAL_MIN = 15, SLOT_S = 30, SETTLE_S = 5, LOW = 0.90, HIGH = 1.10, MAX_ITEMS = 60, HISTORY_MIN = 30;
+
+let history = [], seen = 0, lastSlot = -1;
+const $ = id => document.getElementById(id);
+
+function setStatus(ok, text){}   // status display removed from the header
+
+async function tick(){
+  const slot = Math.floor((Date.now() / 1000 - SETTLE_S) / SLOT_S);
+  if (slot === lastSlot) return;
+  lastSlot = slot;
+  const slotEnd = slot * SLOT_S * 1000;
+  try{
+    let cont = "", countNow = 0, countNormal = 0, done = false;
+    for (let page = 0; page < 8 && !done; page++){
+      const r = await fetch(API + (cont ? "&rccontinue=" + encodeURIComponent(cont) : ""), {cache:"no-store"});
+      const j = await r.json();
+      for (const e of j.query.recentchanges){
+        const age = (slotEnd - Date.parse(e.timestamp)) / 1000;
+        if (age <= 0) continue;
+        if (age > NORMAL_MIN * 60){ done = true; break; }
+        countNormal++;
+        if (age <= NOW_MIN * 60) countNow++;
+      }
+      if (!j.continue) break;
+      cont = j.continue.rccontinue;
+    }
+    if (countNormal < 10) return;
+    const rate = countNow / NOW_MIN, baseline = countNormal / NORMAL_MIN;
+    const ratio = rate / baseline, pct = (ratio - 1) * 100;
+    const level = Math.min(1, Math.max(0, (ratio - LOW) / (HIGH - LOW)));
+    render(rate, baseline, pct, level);
+    $("stamp").textContent = "reading for " + new Date(slotEnd).toLocaleTimeString([], {hour:"numeric", minute:"2-digit", second:"2-digit"});
+  }catch(e){ setStatus(false, "Can't reach Wikipedia · retrying"); }
+}
+
+function render(rate, baseline, pct, level){
+    $("pct").firstChild.nodeValue = (pct >= 0 ? "+" : "−") + Math.abs(pct).toFixed(0);
+    $("rate").textContent = rate.toFixed(0);
+    $("base").textContent = baseline.toFixed(0);
+    $("level").textContent = level.toFixed(2);
+    const t = $("trend");
+    t.className = "trend " + (pct > 3 ? "up" : pct < -3 ? "down" : "flat");
+    t.textContent = pct > 3 ? "▲ busier than normal · dots pulsing faster"
+                  : pct < -3 ? "▼ quieter than normal · dots slowing down"
+                  : "● about normal · steady pulse";
+    history.push({t: Date.now(), rate, baseline});
+    const cutoff = Date.now() - HISTORY_MIN * 60000;
+    history = history.filter(p => p.t >= cutoff);
+    draw();
+}
+
+function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+function draw(){
+  const c = $("chart"), dpr = window.devicePixelRatio || 1;
+  const w = c.clientWidth, h = c.clientHeight;
+  c.width = w * dpr; c.height = h * dpr;
+  const g = c.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0,0,w,h);
+  const padL = 34, padB = 18, padT = 8, padR = 8;
+  const now = Date.now(), t0 = now - HISTORY_MIN * 60000;
+  const vals = history.flatMap(p => [p.rate, p.baseline]);
+  const max = Math.max(50, ...vals) * 1.15, min = 0;
+  const X = t => padL + (t - t0) / (now - t0) * (w - padL - padR);
+  const Y = v => padT + (1 - (v - min) / (max - min)) * (h - padT - padB);
+  g.font = "11px " + css("--mono"); g.fillStyle = css("--muted"); g.strokeStyle = css("--rule"); g.lineWidth = 1;
+  const step = max > 300 ? 100 : max > 120 ? 50 : 25;
+  for (let v = 0; v <= max; v += step){ g.beginPath(); g.moveTo(padL, Y(v)); g.lineTo(w - padR, Y(v)); g.stroke(); g.fillText(v, 0, Y(v) + 4); }
+  [30,20,10,0].forEach(m => { const x = X(now - m*60000); g.fillText(m ? `−${m} min` : "now", Math.min(x - 14, w - 30), h - 3); });
+  if (history.length < 2) return;
+  // normal (baseline) as a dashed line
+  g.setLineDash([4,4]); g.strokeStyle = css("--muted"); g.beginPath();
+  history.forEach((p,i) => i ? g.lineTo(X(p.t), Y(p.baseline)) : g.moveTo(X(p.t), Y(p.baseline))); g.stroke(); g.setLineDash([]);
+  // rate with a soft area fill
+  g.beginPath(); history.forEach((p,i) => i ? g.lineTo(X(p.t), Y(p.rate)) : g.moveTo(X(p.t), Y(p.rate)));
+  g.lineTo(X(history.at(-1).t), Y(0)); g.lineTo(X(history[0].t), Y(0)); g.closePath();
+  g.globalAlpha = .08; g.fillStyle = css("--ink"); g.fill(); g.globalAlpha = 1;
+  g.beginPath(); history.forEach((p,i) => i ? g.lineTo(X(p.t), Y(p.rate)) : g.moveTo(X(p.t), Y(p.rate)));
+  g.strokeStyle = css("--ink"); g.lineWidth = 2; g.stroke();
+  const last = history.at(-1); g.beginPath(); g.arc(X(last.t), Y(last.rate), 4, 0, 7); g.fillStyle = css("--ink"); g.fill();
+}
+
+function addEdit(d){
+  seen++; $("seen").textContent = seen.toLocaleString() + " edits since this page opened";
+  const li = document.createElement("li");
+  const time = new Date(d.timestamp * 1000).toLocaleTimeString([], {hour:"numeric", minute:"2-digit", second:"2-digit"});
+  const diff = (d.length && d.length.new != null && d.length.old != null) ? d.length.new - d.length.old : 0;
+  const t = document.createElement("span"); t.className = "t"; t.textContent = time;
+  const ti = document.createElement("span"); ti.className = "title";
+  const a = document.createElement("a"); a.href = "https://en.wikipedia.org/wiki/" + encodeURIComponent(d.title.replace(/ /g,"_"));
+  a.target = "_blank"; a.rel = "noopener"; a.textContent = d.title;
+  const who = document.createElement("span"); who.className = "who"; who.textContent = d.user;
+  ti.append(a, who);
+  const de = document.createElement("span"); de.className = "delta " + (diff > 0 ? "pos" : diff < 0 ? "neg" : "zero");
+  de.textContent = (diff > 0 ? "+" : diff < 0 ? "−" : "±") + Math.abs(diff).toLocaleString();
+  li.append(t, ti, de);
+  const list = $("list"); list.prepend(li);
+  while (list.children.length > MAX_ITEMS) list.lastChild.remove();
+}
+
+function connect(){
+  const es = new EventSource(STREAM);
+  es.onopen = () => setStatus(true, "Live · English Wikipedia");
+  es.onmessage = ev => {
+    try{
+      const d = JSON.parse(ev.data);
+      if (d.meta && d.meta.domain === "en.wikipedia.org" && d.type === "edit" && !d.bot && d.namespace === 0) addEdit(d);
+    }catch(e){}
+  };
+  es.onerror = () => setStatus(false, "Reconnecting…");
+}
+
+tick(); setInterval(tick, 1000);
+connect();
+addEventListener("resize", draw);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
+</script>
+</body>
+</html>
