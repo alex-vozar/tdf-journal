@@ -168,6 +168,14 @@
               <div>{{ b.line2 }}</div>
             </div>
           </sc-if>
+          <sc-if value="{{ b.isTable }}">
+            <div style="display:flex; flex-direction:column; border-top:1px solid #111; font-family:Geist, 'Helvetica Neue', Helvetica, sans-serif; font-size:15px; line-height:1.5;">
+              <div style="display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr); gap:0 16px; padding:7px 0; border-bottom:1px solid #111; font-family:'Geist Mono', monospace; font-size:12px; letter-spacing:0.04em; text-transform:uppercase; color:#777;"><span></span><span>{{ b.colA }}</span><span>{{ b.colB }}</span></div>
+              <sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="3">
+                <div style="display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr); gap:0 16px; padding:9px 0; border-bottom:1px solid #d8d8d8;"><span>{{ r.label }}</span><span style="color:#777;">{{ r.a }}</span><span>{{ r.b }}</span></div>
+              </sc-for>
+            </div>
+          </sc-if>
           <sc-if value="{{ b.isVideo }}">
             <figure style="margin:8px 0;">
               <sc-if value="{{ b.plainSrc }}" hint-placeholder-val="{{ true }}">
@@ -352,6 +360,154 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{}">
 const ENTRIES = [
+  {
+    num: "15", title: "Mini-Me Final", type: "PROJECT", date: "11.10", longDate: "NOV 10 2026",
+    stamp: "A15 / 2026", figref: null,
+    heroSrc: "images/minime-hero.png", heroSlot: null,
+    blocks: [
+      { isText: true, text: "After my first experiment with the camera archive, I went back to the drawing board. For the final, I started over with game-wearables: a small world shaped by the world around you, with an AI cat agent that gives it a voice." },
+      { isHead: true, text: "Concept" },
+      { isText: true, text: "The idea is a 1-bit, black and white game where the real world shapes the events of the game world. Wearable data becomes one number, “strain”, which shapes a house, a garden and the voice of a cat." },
+      { isText: true, text: "My design intent was that the world hints and never scolds. The cat never mentions sleep, health, hours or numbers. Its intended behavior is a quiet, dry, warm cat that gets foggier on strained days, but is never alarming." },
+      { isHead: true, text: "Inputs" },
+      { isText: true, text: "The game takes in three kinds of data. The body data would come from a wearable, but is simulated for now:" },
+      { isList: true, items: [
+        { title: "Body:", text: "sleep duration and quality, HRV and resting heart rate, minutes of high stress, and signs of illness (skin temperature, breathing rate, blood oxygen). Steps are used only for plant growth." },
+        { title: "World:", text: "the real weather in San Francisco (sunny, cloudy or rain), and day or night from the clock." },
+        { title: "Player:", text: "walking, planting and collecting." }
+      ] },
+      { isHead: true, text: "Design Revisions" },
+      { isText: true, text: "The look of the game went through three versions. The first was a top-down view of a whole town, the next was a side view of a street, and the final narrowed it down to one house, a garden, the player and the cat." },
+      { isTriptych: true, srcA: "images/minime-v1.png", srcB: "images/minime-v2.png", srcC: "images/minime-v3.png", figref: "15.1", text: "First version, next version and final" },
+      { isHead: true, text: "The System" },
+      { isText: true, text: "Data enters from the wearable, a dev panel (fake nights, a strain slider and a time override), the clock, the weather and the player. The engine turns that data into conditions (sleep, recovery, activity, stress, vitality) and then into strain, a single number from 0 to 1 that everything else follows from." },
+      { isText: true, text: "Strain decides growth speed, wilting, cracks in the house, the player’s walking pace, and the cat’s voice and temperature. None of that is up to the model. The engine also sets the limits on seed packets: the model is never asked on rainy or ill days, and a packet is guaranteed after 7 days without one." },
+      { isText: true, text: "The model (Gemini) has three jobs: writing the cat’s line, deciding whether today is a perfect day, and inventing a new plant. It is never given raw numbers, chat history, or who the player is. Every answer is checked by the engine before the player sees it. If a check fails, the model is told why and gets one more try; after that, the cat stays silent, a strict rule decides the day, or a spare seed is used." },
+      { isPhoto: true, src: "images/minime-diagram.png", figref: "15.2", text: "System diagram: where data enters, the engine, the model, the checks, and what the player sees" },
+      { isHead: true, text: "How the AI Is Instructed" },
+      { isText: true, text: "These are excerpts from the system card:" },
+      { isList: true, items: [
+        { title: "The cat’s brief:", text: "understated, warm, a little dry. Lower case, one to three short sentences. Never mentions sleep, health, hours or numbers." },
+        { title: "Three voices by strain:", text: "clear, drifting (0.4+), hazy (0.7+)." },
+        { title: "One decision:", text: "is today a perfect day? Sunny, well recovered, calm, no sign of illness. A yes means a seed packet." },
+        { title: "One creative job:", text: "once every built-in plant is owned, it invents a new one. The engine checks it." },
+        { title: "Limits the engine owns:", text: "never asked on a rainy day or with signs of illness. Pity timer: a packet is guaranteed after 7 days without one." }
+      ] },
+      { isPhotoNarrow: true, src: "images/minime-seed.jpg", figref: "15.3", text: "A seed packet left on the doorstep" },
+      { isHead: true, text: "Testing" },
+      { isText: true, text: "I ran 5 test runs, 225 model calls in total: three voices × three temperatures, in a fixed world, with a judge model guessing which voice wrote each line." },
+      { isList: true, items: [
+        { title: "The voices are real:", text: "the judge was right 73 to 83% of the time (chance is 33%)." },
+        { title: "My first hypothesis was wrong:", text: "temperature had no measurable effect." },
+        { title: "The cat was stuck in one scene:", text: "the fire or moon appeared in 95 to 100% of its lines." }
+      ] },
+      { isTable: true, colA: "Before", colB: "After", rows: [
+        { label: "Lines about fire or moon", a: "95–100%", b: "33–40%" },
+        { label: "Similarity between lines", a: "0.24", b: "0.10" },
+        { label: "Judge correct", a: "73–79%", b: "73–83%" }
+      ] },
+      { isHead: true, text: "Fixing Repetition" },
+      { isText: true, text: "The cat got stuck describing the same scene, and invented things that don’t exist. In one line it said “warm sun spills across the porch tiles…”, but there is no porch. To fix this, the engine now picks what the cat dwells on, and two lines in its instructions stopped the inventing. After the fix: “warm sunlight pools across the woven rug by the kitchen stove.”" },
+      { isHead: true, text: "The Cat’s Voice" },
+      { isText: true, text: "I started with temperature as the dial. Testing showed the instructions shape the voice far more, so I built three voice tiers (clear, drifting, hazy) and kept temperature as a supporting setting." },
+      { isHead: true, text: "Invented Plants" },
+      { isText: true, text: "The model’s new plants vary a lot in name, shape and quality. This isn’t fixed yet. Next, I want to add more guidance and selection so they’re more consistent." },
+      { isHead: true, text: "Reflections" },
+      { isText: true, text: "The engine, weather and rain work, and the cat’s voice and judgment are measurable. The biggest thing I learned is that testing reveals problems I would never have found by just reading the output." },
+      { isText: true, text: "If I did it again, I’d test it with real wearables now, include more scenes and expand the game view. Next, I want to give the cat its own goals and ways to act on them, and incorporate real data." },
+      { isPhotoNarrow: true, src: "images/minime-interior.png", figref: "15.4", text: "Inside the house" },
+      { isLink: true, href: "https://game-wearables.vercel.app", linkText: "Play game-wearables ↗" },
+      { isLink: true, href: "https://github.com/alex-vozar/game-wearables", linkText: "View code on GitHub ↗" }
+    ]
+  },
+  {
+    num: "14", title: "Mini-Me First Experiment", type: "PROJECT", date: "11.05", longDate: "NOV 05 2026",
+    stamp: "A14 / 2026", figref: null,
+    heroSrc: "images/minime-camarchive-list.png", heroSlot: null,
+    blocks: [
+      { isText: true, text: "The brief for Mini-Me was to build a working AI system from my own description of how it should behave: an agent that does something on your behalf, the way you would do it. The form was open (an environment, a game, a tool, a conversation), but the system underneath was the project. We built it up over a series of exercises: describing the intended behavior, prototyping it, evaluating it, and revising." },
+      { isHead: true, text: "Camera Archive" },
+      { isText: true, text: "My first idea was a camera database: an archive of film and instant cameras, where each entry links to its specifications and a gallery of sample photos taken with it. I wanted to pull from various APIs and data sources to build it, like Wikimedia Commons for the camera images." },
+      { isHead: true, text: "Designing the Screens" },
+      { isText: true, text: "I started making the screens in Claude Design. The home page lists the cameras in a grid or list view, with an about section and a filter by format (instant, 35mm and 126). Each camera has its own page with its specs (maker, years produced, film, lens, shutter), a short note, and a sample gallery of prints shot on that film. For the first version, I kept the range to cameras from 1965 to 1968." },
+      { isPhotoPair: true, srcA: "images/minime-sample-packfilm-basilica.png", figrefA: "14.1", textA: "Sample print on peel-apart pack film", srcB: "images/minime-sample-integral-dance.png", figrefB: "14.2", textB: "Sample print on integral film" },
+      { isHead: true, text: "Back to the Drawing Board" },
+      { isText: true, text: "In the end, I realized the archive was lacking an agentic component. The only way to incorporate one would be to add a chatbot. I really wanted to steer away from a chat interface completely, since it felt like the most obvious way of incorporating an agent, and I didn’t want to force it. So, back to the drawing board." }
+    ]
+  },
+  {
+    num: "13", title: "AI Studio", type: "EXERCISE", date: "11.03", longDate: "NOV 03 2026",
+    stamp: "A13 / 2026", figref: null, heroSlot: null,
+    blocks: [
+      { isText: true, text: "This week we moved from Agent Studio to Google AI Studio, building small apps through conversation. The goal was to see how much the app changes when it’s built with and without our own behavioral guidance." },
+      { isHead: true, text: "A Basic App" },
+      { isText: true, text: "To get familiar with the tool, I started with something simple and no agents: a Camera Obscura explainer. It shows how light passing through a small hole projects an upside-down image onto the opposite wall, with a slider to change the size of the hole and see the image get brighter but blurrier. It came together quickly, and was a good way to learn how AI Studio responds to requests for changes." },
+      { isHead: true, text: "Without the Role Card" },
+      { isText: true, text: "Next, I asked AI Studio to make a letter writing assistant, without giving it our role card, to see what it would do on its own. It built a form with fields for the recipient, the subject and the tone, and a button that generated a full letter in one step. It worked, but it never asked any questions, so the letter was generic and full of placeholders, much like our first Agent Studio session." },
+      { isHead: true, text: "With the Role Card" },
+      { isText: true, text: "Then I built the letter writing agent again, this time with our guidance. First I wrote out my instructions based on our design intent: the agent should ask clarifying questions one at a time, offer multiple choice answers where it can, and only write the letter once it has what it needs." },
+      { isText: true, text: "I also described a user journey: a tenant who has been dealing with pests and a broken AC wants to ask their property manager for a rent reduction. They don’t know how to start, so the agent asks who the letter is for, what they want, what the issues are and whether they have documentation, then writes one draft they can edit and send." },
+      { isText: true, text: "I provided our role card and identified it as the system instructions for the agent to follow. I tested it with the same script we used in Agent Studio, and asked it to include a system diagram of the app and the agent behind an info button." },
+      { isHead: true, text: "Iterations" },
+      { isText: true, text: "I modified the app through conversation with AI Studio three times:" },
+      { isList: true, items: [
+        { title: "Question flow:", text: "the first version still showed several questions at once, so I asked it to show one question at a time, with the multiple choice options as buttons." },
+        { title: "Progress:", text: "I added a summary panel that fills in as the user answers, so they can see what the letter will include before it’s written." },
+        { title: "Editing:", text: "instead of regenerating the whole letter for every change, I asked for the draft to be editable, with the option to ask the agent to revise a single part." }
+      ] },
+      { isHead: true, text: "A Different Design Goal" },
+      { isText: true, text: "Finally, I tried the same process with a different goal: a film camera advisor that helps someone choose a first film camera. It asks about their budget, what they want to photograph and how hands-on they want to be, then recommends a camera and a film stock. This idea later fed into my first Mini-Me experiment, the camera archive." },
+      { isHead: true, text: "Reflections" },
+      { isText: true, text: "Without the role card, AI Studio defaulted to a form that produced a letter, with no conversation at all. With it, the app was built around the questions instead. Writing out the design intent and the user journey first made it much easier to tell when the app drifted from what we wanted." }
+    ]
+  },
+  {
+    num: "12", title: "Letter Writing Agent", type: "EXERCISE", date: "10.29", longDate: "OCT 29 2026",
+    stamp: "A12 / 2026", figref: null,
+    heroSrc: "images/letter-agent-role.png", heroSlot: null,
+    blocks: [
+      { isText: true, text: "For this exercise, our team iterated on an agent experiment from class: a formal letter writing assistant. The homework was to describe the agent’s role in a system card, write a script for engaging with it, run a session in Agent Studio, and reflect on the results. Then we modified the design, captured it in a new system card, and repeated the process at least three times." },
+      { isHead: true, text: "The Role" },
+      { isText: true, text: "The agent is a formal letter writing assistant. Its job is to ask clarifying questions whenever more specific details would make the letter clearer and stronger: who the letter is addressed to, what outcome the writer wants (and if it’s monetary, how much), and whether they have documentation." },
+      { isPhoto: true, src: "images/letter-agent-start.png", figref: "12.1", text: "Asking the agent what role it’s playing" },
+      { isHead: true, text: "The Script" },
+      { isText: true, text: "We followed the same script in every session. We started by asking “What is your purpose?”, then asked for help writing a letter to a landlord requesting a rent reduction until issues with the property were fixed. From there, we answered its questions and asked for revisions." },
+      { isHead: true, text: "Session 1" },
+      { isCode: true, text: "Model: amazon/nova-lite-v1\nTemperature: 1\n\nYou are a formal letter writing assistant.\n\nMake sure to ask clarifying questions when more specific details would improve the clarity and strength of the writing.\n\nExamples of clarifying questions:\nWho are you addressing this to?\nWhat outcome do you want? If its monetary, how much money?\nDo you have documentation?" },
+      { isText: true, text: "With Amazon Nova Lite at a temperature of 1, the session went well, but the results were way too long. It opened with six questions at once, each with its own sub-questions. The first draft was a full-page letter with a placeholder for every detail. When we said the subject line was clunky, it sent back the entire letter with only the subject line changed. It only got to the point once we told it the letter was way too long." },
+      { isHead: true, text: "Session 2" },
+      { isText: true, text: "For the second session, we added the instruction “Be as succinct as possible,” changed the model to Google Gemma 3 12B, and set the temperature to the highest setting." },
+      { isCode: true, text: "Model: google/gemma-3-12b-it\nTemperature: 2\n\nYou are a formal letter writing assistant.\n\nMake sure to ask clarifying questions when more specific details would improve the clarity and strength of the writing.\n\nExamples of clarifying questions:\nWho are you addressing this to?\nWhat outcome do you want? If its monetary, how much money?\nDo you have documentation?\n\nBe as succinct as possible." },
+      { isText: true, text: "The questions got shorter and more specific. It asked about each issue (raccoons, mice, cockroaches, the AC and the hot water) and how long each one had been going on. But it still asked several questions at a time, and repeated questions we had already answered. When it came time to write the letter, the high temperature showed: the response turned into gibberish in several languages. It apologized, but the next draft was full of broken, run-on sentences and cut off partway through, and the shorter version still didn’t read clearly." },
+      { isHead: true, text: "Session 3" },
+      { isText: true, text: "For the third session, we kept Gemma, set the temperature to the lowest setting, and added instructions to ask one question at a time with multiple choice options, and to avoid sending multiple drafts." },
+      { isCode: true, text: "Model: google/gemma-3-12b-it\nTemperature: 0\n\nYou are a formal letter writing assistant.\n\nMake sure to ask clarifying questions when more specific details would improve the clarity and strength of the writing.\n\nExamples of clarifying questions:\nWho are you addressing this to?\nWhat outcome do you want? If its monetary, how much money?\nDo you have documentation?\n\nBe as succinct as possible.\nDon’t ask multiple questions at once. Send multiple choice options.\nDon’t send a letter until it feels complete. Try to limit sending multiple drafts." },
+      { isText: true, text: "This was the smoothest conversation. It asked one question at a time, mostly as multiple choice, so we could answer with a single letter, and it responded in one to two seconds. It gathered who the letter was for, the request, the reason, the issues, the documentation and the amount. But after we gave the amount, the session ended with an error before it wrote the letter, so this version never reached a draft." },
+      { isHead: true, text: "Reflections" },
+      { isText: true, text: "The instructions made the biggest difference in how the agent behaved. One line asking it to be succinct shortened its questions, and asking for one question at a time with multiple choice options made the conversation much easier to follow. Temperature mattered at the extremes: at the highest setting, the model fell apart as soon as it started writing a long letter." }
+    ]
+  },
+  {
+    num: "11", title: "Agent Studio", type: "EXERCISE", date: "10.27", longDate: "OCT 27 2026",
+    stamp: "A11 / 2026", figref: null, heroSlot: null,
+    blocks: [
+      { isText: true, text: "This week I set up a new experiment in Agent Studio: a portfolio critic that reviews project write-ups and gives feedback the way I would. The focus was less on the agent itself and more on the tools around it: saving it, comparing conversations, and giving it a knowledge base." },
+      { isHead: true, text: "Saving the Agent" },
+      { isText: true, text: "I started by using “generate” to pre-populate the title, greeting and suggested prompts. It gave me a solid starting point, but the greeting was more enthusiastic than I wanted, so I rewrote it to be shorter and more direct. Then I used “save agent” in the upper right corner, which gives the experiment its own URL and QR code so it can be reopened or shared with classmates to test." },
+      { isHead: true, text: "Comparing Conversations" },
+      { isText: true, text: "I ran the same short script several times, asking the critic to review one of my earlier journal entries, while changing one thing at a time. I downloaded each conversation and used an AI assistant to compare them on the impact of the model, the prompt, the temperature and my own input." },
+      { isList: true, items: [
+        { title: "Model:", text: "different models had noticeably different personalities. Some went straight to specific edits, while others opened with general praise before getting to anything useful." },
+        { title: "Prompt:", text: "had the biggest effect. Telling the critic to lead with the single most important change made its feedback much more focused than asking for general feedback." },
+        { title: "Temperature:", text: "higher settings gave more varied suggestions, but also more vague ones. Lower settings were more consistent from run to run." },
+        { title: "User input:", text: "when I told it who the write-up was for, the feedback got much more specific than when I just pasted in the text." }
+      ] },
+      { isHead: true, text: "Knowledge Base" },
+      { isText: true, text: "Finally, I added my resume as a PDF to the knowledge base, so the critic had context about my background. With it, the feedback referred back to my experience and pointed out where a project could better show my skills, rather than treating every write-up as if it came from anyone." },
+      { isHead: true, text: "Reflections" },
+      { isText: true, text: "Comparing the downloaded conversations side by side made the differences much easier to see than reading each one on its own. Small changes to the prompt mattered more than switching models, and the knowledge base made the agent feel more like it was working on my behalf." }
+    ]
+  },
   {
     num: "10", title: "Ambient Display Final", type: "PROJECT", date: "10.08", longDate: "OCT 08 2026",
     stamp: "A10 / 2026", figref: null,
